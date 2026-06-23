@@ -1,0 +1,59 @@
+Title: runbook-verified.txt
+
+# Verified Runbook — Restart Nginx Service
+
+## Confirm
+
+1. Verify the nginx service exists:
+
+```bash
+systemctl status nginx --no-pager
+```
+
+2. Verify nginx is currently active:
+
+```bash
+systemctl is-active nginx
+```
+
+## Capture
+
+1. Capture current service status:
+
+```bash
+systemctl status nginx --no-pager > nginx-status-before.txt
+```
+
+2. Capture recent logs:
+
+```bash
+journalctl -u nginx -n 20 --no-pager > nginx-logs-before.txt
+```
+
+## Change
+
+1. Restart the nginx service:
+
+```bash
+sudo systemctl restart nginx
+```
+
+## Verify
+
+1. Verify nginx is active after restart:
+
+```bash
+systemctl is-active nginx
+```
+
+2. Verify the web server responds:
+
+```bash
+curl http://localhost
+```
+
+Expected Result:
+
+* Service status is active.
+* The default nginx welcome page is returned.
+* No service errors are reported.

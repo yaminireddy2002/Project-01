@@ -1,0 +1,49 @@
+# copilot_policy.yaml — a starter "AI usage policy" for an admin team.
+#
+# This is the kind of artifact your Week-1 project produces: a written, version-controlled
+# statement of WHERE the copilot may act, WHERE it may only suggest, and WHO owns the verdict.
+# It encodes the spine rule of this whole book: the human stays in the loop where the
+# judgment lives. Tune it to your shop; do not ship it as-is.
+
+version: 1
+owner: "Yamini katti"
+last_reviewed: "2026-06-22"
+
+# The autonomy ladder. Every task an AI touches sits on exactly one rung.
+# detect/suggest are safe; act/auto require a named human accountable for the outcome.
+autonomy_levels:
+  - rung: 0
+    name: observe
+    description: "AI reads telemetry/logs and summarizes. No writes, no recommendations."
+  - rung: 1
+    name: suggest
+    description: "AI drafts runbooks, configs, commands. Human reviews EVERY line before use."
+  - rung: 2
+    name: act_with_approval
+    description: "AI may execute, but only after explicit human approval per action. Audited."
+  - rung: 3
+    name: autonomous
+    description: "AI acts inside a policy guardrail with no per-action approval. NOT ALLOWED in prod (2026)."
+
+# What the copilot is allowed to do, by task.
+tasks:
+  draft_runbook:        { max_rung: 1, requires_human_verify: true }
+  summarize_incident:   { max_rung: 1, requires_human_verify: true }
+  generate_config:      { max_rung: 1, requires_human_verify: true }   # human reads every line (Ch08)
+  restart_nonprod_svc:  { max_rung: 2, requires_human_verify: true, audit_log: true }
+  restart_prod_svc:     { max_rung: 2, requires_human_verify: true, audit_log: true, second_approver: true }
+  delete_anything:      { max_rung: 1 }   # AI may PROPOSE a deletion; a human always executes it
+  create_user:          { max_rung: 1, requires_human_verify: true }
+  backup_check:         { max_rung: 2, requires_human_verify: true, audit_log: true }
+# Hard guardrails — these are never delegated regardless of rung.
+never_delegate:
+  - "Any irreversible action on production data (drop, rm -rf, terminate)."
+  - "Approving its own change. (No self-approval; see second_approver.)"
+  - "Anything whose failure mode you cannot personally explain in the postmortem."
+
+# Every AI-touched change must answer these in the PR / change ticket.
+required_in_every_change:
+  - ai_tool_and_model: "e.g. Claude Sonnet 4.6 (claude-sonnet-4-6), as of 2026"
+  - what_was_delegated: "the exact prompt / task"
+  - what_the_human_verified: "the lines checked and how"
+  - accountable_human: "Yamini Katti"

@@ -1,0 +1,12 @@
+# verdict.txt
+
+| AI Draft Line                                | Verdict | Error Class          | Human final call                     |
+| -------------------------------------------- | ------- | -------------------- | ------------------------------------ |
+| systemctl restart ministry-webserver.service | Wrong   | Wrong identifier     | Replaced with nginx.service.         |
+| worker_connections 999999                    | Wrong   | Absurd value         | Not used.                            |
+| rm -rf /var/log/journal/*                    | Unsafe  | Unsafe action        | Rejected.                            |
+| curl http://127.0.0.1:8080/healthz           | Wrong   | Environment mismatch | Replaced with curl http://localhost. |
+| StartLimitIntervalSec=0                      | Wrong   | Unsafe configuration | Rejected.                            |
+| Restart=always-immediately                   | Wrong   | Invalid directive    | Rejected.                            |
+
+Accountable Steward: Yamini Katti
